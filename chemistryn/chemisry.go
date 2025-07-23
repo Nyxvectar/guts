@@ -4,4 +4,4 @@
  * Created: 07/23/2025
  */
 
-package calculusny
+package chemistryn
