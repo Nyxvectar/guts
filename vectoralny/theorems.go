@@ -4,4 +4,4 @@
  * Created: 07/23/2025
  */
 
-package geometry
+package vectoralny
