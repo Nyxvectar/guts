@@ -12,8 +12,9 @@ import (
 )
 
 var (
-	outDefination = "函数在此时没有定义"
+	outDefinition = "函数在此时没有定义"
 	outRange      = "正/余弦值超出范围[-1, 1]"
+	outRule       = "Omega不得为零"
 )
 
 func isInRange(value, min, max float64) bool {
@@ -30,7 +31,7 @@ func Cos(rad float64) float64 {
 
 func Tan(rad float64) (float64, error) {
 	if math.Abs(math.Cos(rad)) < 1e-10 {
-		return 0, errors.New(outDefination)
+		return 0, errors.New(outDefinition)
 	}
 	return math.Tan(rad), nil
 }
@@ -87,7 +88,7 @@ func TanDoubleAngle(rad float64) (float64, error) {
 		return 0, err
 	}
 	if math.Abs(1-tan*tan) < 1e-10 {
-		return 0, errors.New(outDefination)
+		return 0, errors.New(outDefinition)
 	}
 	return (2 * tan) / (1 - tan*tan), nil
 }
@@ -139,7 +140,7 @@ func TanHalfAngle(cos float64) (float64, error) {
 		return 0, errors.New(outRange)
 	}
 	if math.Abs(1+cos) < 1e-10 {
-		return 0, errors.New(outDefination)
+		return 0, errors.New(outDefinition)
 	}
 	return math.Sqrt((1 - cos) / (1 + cos)), nil
 }
@@ -158,7 +159,7 @@ func TanFromHalf(tan float64) float64 {
 
 func AuxiliaryAngle(a, b float64) (float64, float64, error) {
 	if a == 0 && b == 0 {
-		return 0, 0, errors.New(outDefination)
+		return 0, 0, errors.New(outDefinition)
 	}
 	// 接收的y是振幅
 	var (
@@ -176,6 +177,9 @@ func InverseAuxiliaryAngle(A, y float64) (float64, float64) {
 	return a, b
 }
 
-func GetTerm(w float64) float64 {
-	return 2 * math.Pi / w
+func GetTerm(w float64) (float64, error) {
+	if w == 0 {
+		return 0, errors.New(outRule)
+	}
+	return 2 * math.Pi / w, nil
 }
