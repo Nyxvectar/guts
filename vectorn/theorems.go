@@ -9,37 +9,56 @@ package vectorn
 import "math"
 
 type Vector struct {
-	x float64
-	y float64
-	z float64
+	X float64
+	Y float64
+	Z float64
 }
 
-func VectorModulus(vectar Vector) float64 {
-	return math.Sqrt(vectar.x*vectar.x + vectar.y*vectar.y + vectar.z*vectar.z)
+func VectorModulus(v Vector) float64 {
+	return math.Hypot(v.X, math.Hypot(v.Y, v.Z))
 }
 
 func DeterminantLinear(a, b Vector) bool {
-	if (a.x == 0 && a.y == 0 && a.z == 0) || (b.x == 0 && b.y == 0 && b.z == 0) {
+	if isZeroVector(a) || isZeroVector(b) {
 		return true
-	} else if a.x*b.y == b.x*a.y && a.x*b.z == b.x*a.z && a.y*b.z == b.y*a.z {
-		return true
-	} else {
+	}
+
+	if !almostEqual(a.X*b.Y, a.Y*b.X) ||
+		!almostEqual(a.X*b.Z, a.Z*b.X) ||
+		!almostEqual(a.Y*b.Z, a.Z*b.Y) {
 		return false
 	}
+	return true
 }
 
 func QuantityProduct(a, b Vector) float64 {
-	return a.x*b.x + a.y*b.y + a.z*b.z
+	return a.X*b.X + a.Y*b.Y + a.Z*b.Z
 }
 
 func VectorAngleCos(a, b Vector) float64 {
+	if isZeroVector(a) || isZeroVector(b) {
+		return 0
+	}
 	return QuantityProduct(a, b) / (VectorModulus(a) * VectorModulus(b))
 }
 
 func CrossProduct(a, b Vector) Vector {
 	return Vector{
-		a.y*b.z - a.z*b.y,
-		a.z*b.x - a.x*b.z,
-		a.x*b.y - a.y*b.x,
+		a.Y*b.Z - a.Z*b.Y,
+		a.Z*b.X - a.X*b.Z,
+		a.X*b.Y - a.Y*b.X,
 	}
+}
+
+func isZeroVector(v Vector) bool {
+	const epsilon = 1e-10
+	return math.Abs(v.X) < epsilon &&
+		math.Abs(v.Y) < epsilon &&
+		math.Abs(v.Z) < epsilon
+}
+
+func almostEqual(a, b float64) bool {
+	const epsilon = 1e-10
+	return math.Abs(a-b) < epsilon ||
+		math.Abs(a-b) < epsilon*math.Max(math.Abs(a), math.Abs(b))
 }
