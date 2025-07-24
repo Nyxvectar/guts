@@ -4,6 +4,8 @@
  * Created: 07/23/2025
  */
 
+// Package vectorn 提供向量运算的基本功能
+// 导入路径: "go-zju-formulas/algebran"
 package vectorn
 
 import "math"
