@@ -4,7 +4,6 @@
  * Created: 07/23/2025
  */
 
-//"三角万能公式",
 //"辅助角公式",
 //"三角函数周期公式",
 //"常见三角不等式"
@@ -142,4 +141,32 @@ func TanHalfAngle(cos float64) (float64, error) {
 		return 0, errors.New("tan(θ/2)在π+2kπ处无定义")
 	}
 	return math.Sqrt((1 - cos) / (1 + cos)), nil
+}
+
+func SinFromHalf(tan float64) float64 {
+	return 2 * tan / (1 + tan*tan)
+}
+
+func CosFromHalf(tan float64) float64 {
+	return (1 - tan*tan) / (1 + tan*tan)
+}
+
+func TanFromHalf(tan float64) float64 {
+	return 2 * tan / (1 - tan*tan)
+}
+
+func AuxiliaryAngle(a, b float64) (float64, float64, error) {
+	if a == 0 && b == 0 {
+		return 0, 0, errors.New("a和b不能同时为0")
+	}
+	// 接收的y是振幅
+	A := math.Sqrt(a*a + b*b)
+	y := math.Atan2(b, a)
+	return A, y, nil
+}
+
+func InverseAuxiliaryAngle(A, y float64) (float64, float64) {
+	a := A * math.Cos(y)
+	b := A * math.Sin(y)
+	return a, b
 }
