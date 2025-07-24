@@ -8,5 +8,5 @@
 package main
 
 func main() {
-	print("Nyxvectar ♥️ Crimsonet")
+	print("Crimsonet Wanna be f**ked")
 }
