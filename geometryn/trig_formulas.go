@@ -16,3 +16,10 @@
 //"常见三角不等式"
 
 package geometryn
+
+import "math"
+
+func angleToRadian(angle float64) float64 {
+	radian := angle * math.Pi / 180
+	return radian
+}
