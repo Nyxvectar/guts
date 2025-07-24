@@ -12,11 +12,14 @@ import (
 )
 
 type Vector2D struct {
-	X, Y float64
+	X float64
+	Y float64
 }
 
 type Triangle struct {
-	A, B, C Vector2D
+	A Vector2D
+	B Vector2D
+	C Vector2D
 }
 
 var (
@@ -36,19 +39,15 @@ func LawOfSines(a, b, c, A, B, C float64) (float64, error) {
 	if A <= 0 || B <= 0 || C <= 0 {
 		return 0, errors.New(angleNegative)
 	}
-
 	if math.Abs(A+B+C-math.Pi) > 1e-9 {
 		return 0, errors.New(angleFault)
 	}
-
-	R1 := a / Sin(A)
-	R2 := b / Sin(B)
-	R3 := c / Sin(C)
-
+	R1 := a / math.Sin(A)
+	R2 := b / math.Sin(B)
+	R3 := c / math.Sin(C)
 	if math.Abs(R1-R2) > 1e-9 || math.Abs(R1-R3) > 1e-9 {
 		return 0, errors.New(calibrationFail)
 	}
-
 	return R1 / 2, nil
 }
 
@@ -59,8 +58,7 @@ func LawOfCosines(a, b, C float64) (float64, error) {
 	if C <= 0 || C >= math.Pi {
 		return 0, errors.New(angleOutRange)
 	}
-
-	cSquared := a*a + b*b - 2*a*b*Cos(C)
+	cSquared := a*a + b*b - 2*a*b*math.Cos(C)
 	if cSquared < 0 {
 		return 0, errors.New(resultNegative)
 	}
@@ -75,10 +73,8 @@ func ProjectionTheorem(a, b, c, B, C float64) (bool, error) {
 	if B <= 0 || C <= 0 || B+C >= math.Pi {
 		return false, errors.New(angleOutRange)
 	}
-
 	left := a
-	right := b*Cos(C) + c*Cos(B)
-
+	right := b*math.Cos(C) + c*math.Cos(B)
 	return math.Abs(left-right) < 1e-9, nil
 }
 
@@ -138,8 +134,6 @@ func Circumcenter(t Triangle) (Vector2D, error) {
 }
 
 func Orthocenter(t Triangle) (Vector2D, error) {
-	slopeAB := (t.B.Y - t.A.Y) / (t.B.X - t.A.X)
-	slopeBC := (t.C.Y - t.B.Y) / (t.C.X - t.B.X)
 	if math.Abs(t.B.X-t.A.X) < 1e-9 {
 		return Vector2D{X: t.A.X, Y: t.C.Y}, nil
 	}
@@ -149,6 +143,8 @@ func Orthocenter(t Triangle) (Vector2D, error) {
 	if math.Abs(t.A.X-t.C.X) < 1e-9 {
 		return Vector2D{X: t.C.X, Y: t.B.Y}, nil
 	}
+	slopeAB := (t.B.Y - t.A.Y) / (t.B.X - t.A.X)
+	slopeBC := (t.C.Y - t.B.Y) / (t.C.X - t.B.X)
 	x := (slopeAB*slopeBC*(t.A.Y-t.C.Y) + slopeBC*(t.B.X-t.A.X) - slopeAB*(t.C.X-t.B.X)) /
 		(slopeBC - slopeAB)
 	y := slopeAB*(x-t.A.X) + t.A.Y

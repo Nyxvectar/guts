@@ -6,45 +6,47 @@
 
 package algebran
 
-type complex struct {
-	real    float64
-	virtual float64
+import "math"
+
+type Complex struct {
+	Real      float64
+	Imaginary float64
 }
 
-func ComplexAdd(a, b complex) complex {
-	var (
-		realPart    = a.real + b.real
-		virtualPart = a.virtual + b.virtual
-	)
-	return complex{
-		realPart,
-		virtualPart,
+func ComplexAdd(a, b Complex) Complex {
+	return Complex{
+		Real:      a.Real + b.Real,
+		Imaginary: a.Imaginary + b.Imaginary,
 	}
 }
 
-func ComplexCross(a, b complex) complex {
-	var (
-		realPart    = a.real*b.real - b.virtual*b.virtual
-		virtualPart = a.virtual + b.virtual
-	)
-	return complex{
-		realPart,
-		virtualPart,
+func ComplexMultiply(a, b Complex) Complex {
+	return Complex{
+		Real:      a.Real*b.Real - a.Imaginary*b.Imaginary,
+		Imaginary: a.Real*b.Imaginary + a.Imaginary*b.Real,
 	}
 }
 
-func ComplexSplash(a, b complex) complex {
-	// 实现复数去分母，a是原式分子，b是原式分母
-	var (
-		Numerator = complex{
-			a.real*b.real + a.virtual*b.virtual,
-			a.virtual*b.real - a.real*b.virtual,
-		}
-		Denominator = b.real*b.real + b.virtual*b.virtual
-		result      = complex{
-			Numerator.real / Denominator,
-			Numerator.virtual / Denominator,
-		}
-	)
-	return result
+func ComplexDivide(a, b Complex) Complex {
+	denominator := b.Real*b.Real + b.Imaginary*b.Imaginary
+
+	if math.Abs(denominator) < 1e-10 {
+		panic("complex division by zero")
+	}
+
+	return Complex{
+		Real:      (a.Real*b.Real + a.Imaginary*b.Imaginary) / denominator,
+		Imaginary: (a.Imaginary*b.Real - a.Real*b.Imaginary) / denominator,
+	}
+}
+
+func ComplexConjugate(a Complex) Complex {
+	return Complex{
+		Real:      a.Real,
+		Imaginary: -a.Imaginary,
+	}
+}
+
+func ComplexModulus(a Complex) float64 {
+	return math.Sqrt(a.Real*a.Real + a.Imaginary*a.Imaginary)
 }

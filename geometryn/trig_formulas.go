@@ -161,19 +161,14 @@ func AuxiliaryAngle(a, b float64) (float64, float64, error) {
 	if a == 0 && b == 0 {
 		return 0, 0, errors.New(outDefinition)
 	}
-	// 接收的y是振幅
-	var (
-		A = math.Sqrt(a*a + b*b)
-		y = math.Atan2(b, a)
-	)
+	A := math.Sqrt(a*a + b*b)
+	y := math.Atan2(b, a)
 	return A, y, nil
 }
 
 func InverseAuxiliaryAngle(A, y float64) (float64, float64) {
-	var (
-		a = A * math.Cos(y)
-		b = A * math.Sin(y)
-	)
+	a := A * math.Cos(y)
+	b := A * math.Sin(y)
 	return a, b
 }
 

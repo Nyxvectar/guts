@@ -22,7 +22,6 @@ func DeterminantLinear(a, b Vector) bool {
 	if isZeroVector(a) || isZeroVector(b) {
 		return true
 	}
-
 	if !almostEqual(a.X*b.Y, a.Y*b.X) ||
 		!almostEqual(a.X*b.Z, a.Z*b.X) ||
 		!almostEqual(a.Y*b.Z, a.Z*b.Y) {
