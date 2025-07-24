@@ -4,10 +4,6 @@
  * Created: 07/23/2025
  */
 
-//"辅助角公式",
-//"三角函数周期公式",
-//"常见三角不等式"
-
 package geometryn
 
 import (
@@ -169,4 +165,8 @@ func InverseAuxiliaryAngle(A, y float64) (float64, float64) {
 	a := A * math.Cos(y)
 	b := A * math.Sin(y)
 	return a, b
+}
+
+func GetTerm(w float64) float64 {
+	return 2 * math.Pi / w
 }
