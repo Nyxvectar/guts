@@ -11,6 +11,11 @@ import (
 	"math"
 )
 
+var (
+	outDefination = "函数在此时没有定义"
+	outRange      = "正/余弦值超出范围[-1, 1]"
+)
+
 func isInRange(value, min, max float64) bool {
 	return value >= min && value <= max
 }
@@ -24,8 +29,8 @@ func Cos(rad float64) float64 {
 }
 
 func Tan(rad float64) (float64, error) {
-	if math.Abs(math.Cos(rad)) < 1e-10 { // 接近 π/2 + kπ
-		return 0, errors.New("tan函数在π/2+kπ处无定义")
+	if math.Abs(math.Cos(rad)) < 1e-10 {
+		return 0, errors.New(outDefination)
 	}
 	return math.Tan(rad), nil
 }
@@ -40,14 +45,14 @@ func RadToDeg(rad float64) float64 {
 
 func SinToCos(sin float64) (float64, error) {
 	if !isInRange(sin, -1, 1) {
-		return 0, errors.New("正弦值超出范围 [-1, 1]")
+		return 0, errors.New(outRange)
 	}
 	return math.Sqrt(1 - sin*sin), nil
 }
 
 func CosToSin(cos float64) (float64, error) {
 	if !isInRange(cos, -1, 1) {
-		return 0, errors.New("余弦值超出范围 [-1, 1]")
+		return 0, errors.New(outRange)
 	}
 	return math.Sqrt(1 - cos*cos), nil
 }
@@ -82,7 +87,7 @@ func TanDoubleAngle(rad float64) (float64, error) {
 		return 0, err
 	}
 	if math.Abs(1-tan*tan) < 1e-10 {
-		return 0, errors.New("tan(2θ)在π/4+kπ/2处无定义")
+		return 0, errors.New(outDefination)
 	}
 	return (2 * tan) / (1 - tan*tan), nil
 }
@@ -117,24 +122,24 @@ func ProductToSumCosCos(radA, radB float64) (float64, float64) {
 
 func SinHalfAngle(cos float64) (float64, error) {
 	if !isInRange(cos, -1, 1) {
-		return 0, errors.New("余弦值超出范围 [-1, 1]")
+		return 0, errors.New(outRange)
 	}
 	return math.Sqrt((1 - cos) / 2), nil
 }
 
 func CosHalfAngle(cos float64) (float64, error) {
 	if !isInRange(cos, -1, 1) {
-		return 0, errors.New("余弦值超出范围 [-1, 1]")
+		return 0, errors.New(outRange)
 	}
 	return math.Sqrt((1 + cos) / 2), nil
 }
 
 func TanHalfAngle(cos float64) (float64, error) {
 	if !isInRange(cos, -1, 1) {
-		return 0, errors.New("余弦值超出范围 [-1, 1]")
+		return 0, errors.New(outRange)
 	}
 	if math.Abs(1+cos) < 1e-10 {
-		return 0, errors.New("tan(θ/2)在π+2kπ处无定义")
+		return 0, errors.New(outDefination)
 	}
 	return math.Sqrt((1 - cos) / (1 + cos)), nil
 }
@@ -153,17 +158,21 @@ func TanFromHalf(tan float64) float64 {
 
 func AuxiliaryAngle(a, b float64) (float64, float64, error) {
 	if a == 0 && b == 0 {
-		return 0, 0, errors.New("a和b不能同时为0")
+		return 0, 0, errors.New(outDefination)
 	}
 	// 接收的y是振幅
-	A := math.Sqrt(a*a + b*b)
-	y := math.Atan2(b, a)
+	var (
+		A = math.Sqrt(a*a + b*b)
+		y = math.Atan2(b, a)
+	)
 	return A, y, nil
 }
 
 func InverseAuxiliaryAngle(A, y float64) (float64, float64) {
-	a := A * math.Cos(y)
-	b := A * math.Sin(y)
+	var (
+		a = A * math.Cos(y)
+		b = A * math.Sin(y)
+	)
 	return a, b
 }
 
