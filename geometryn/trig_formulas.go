@@ -4,6 +4,11 @@
  * Created: 07/23/2025
  */
 
+//"三角万能公式",
+//"辅助角公式",
+//"三角函数周期公式",
+//"常见三角不等式"
+
 package geometryn
 
 import (
@@ -85,6 +90,34 @@ func TanDoubleAngle(rad float64) (float64, error) {
 		return 0, errors.New("tan(2θ)在π/4+kπ/2处无定义")
 	}
 	return (2 * tan) / (1 - tan*tan), nil
+}
+
+func SumToProductSinSum(radA, radB float64) (float64, float64) {
+	return 2 * Sin((radA+radB)/2) * Cos((radA-radB)/2), 0
+}
+
+func SumToProductSinDiff(radA, radB float64) (float64, float64) {
+	return 2 * Cos((radA+radB)/2) * Sin((radA-radB)/2), 0
+}
+
+func SumToProductCosSum(radA, radB float64) (float64, float64) {
+	return 2 * Cos((radA+radB)/2) * Cos((radA-radB)/2), 0
+}
+
+func SumToProductCosDiff(radA, radB float64) (float64, float64) {
+	return -2 * Sin((radA+radB)/2) * Sin((radA-radB)/2), 0
+}
+
+func ProductToSumSinCos(radA, radB float64) (float64, float64) {
+	return 0.5 * Sin(radA+radB), 0.5 * Sin(radA-radB)
+}
+
+func ProductToSumSinSin(radA, radB float64) (float64, float64) {
+	return 0.5 * Cos(radA-radB), -0.5 * Cos(radA+radB)
+}
+
+func ProductToSumCosCos(radA, radB float64) (float64, float64) {
+	return 0.5 * Cos(radA-radB), 0.5 * Cos(radA+radB)
 }
 
 func SinHalfAngle(cos float64) (float64, error) {
