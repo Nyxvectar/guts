@@ -1,6 +1,6 @@
 {
 	"project": "git@github.com:Nyxvectar/go-zju-formulas.git",
-	"description": "ɢᴏ ɪᴍᴘʟᴇᴍᴇɴᴛᴀᴛɪᴏɴ ᴏғ ᴢʜᴇᴊɪᴀɴɢ ᴜɴɪᴠᴇʀsɪᴛʏ's ɢᴜɪᴅɪɴɢ ᴏғ ᴛʜɪɴᴋɪɴɢ ᴍᴇᴛʜᴏᴅs",
+	"description": "Gᴏ ɪᴍᴘʟᴇᴍᴇɴᴛᴀᴛɪᴏɴ ᴏғ Zʜᴇᴊɪᴀɴɢ Uɴɪᴠᴇʀsɪᴛʏ's ɢᴜɪᴅɪɴɢ ᴏғ ᴛʜɪɴᴋɪɴɢ ᴍᴇᴛʜᴏᴅs",
 	"directories": [
 		{
 			"directory": "algebra",
