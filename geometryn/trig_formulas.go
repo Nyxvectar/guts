@@ -4,15 +4,109 @@
  * Created: 07/23/2025
  */
 
-//"同角基本关系式",
-//"诱导公式",
-//"两角和与差的三角公式",
-//"倍角与半角公式",
-//"和差化积公式",
-//"积化和差公式",
-//"三角万能公式",
-//"辅助角公式",
-//"三角函数周期公式",
-//"常见三角不等式"
-
 package geometryn
+
+import (
+	"errors"
+	"math"
+)
+
+func isInRange(value, min, max float64) bool {
+	return value >= min && value <= max
+}
+
+func Sin(rad float64) float64 {
+	return math.Sin(rad)
+}
+
+func Cos(rad float64) float64 {
+	return math.Cos(rad)
+}
+
+func Tan(rad float64) (float64, error) {
+	if math.Abs(math.Cos(rad)) < 1e-10 { // 接近 π/2 + kπ
+		return 0, errors.New("tan函数在π/2+kπ处无定义")
+	}
+	return math.Tan(rad), nil
+}
+
+func DegToRad(deg float64) float64 {
+	return deg * math.Pi / 180
+}
+
+func RadToDeg(rad float64) float64 {
+	return rad * 180 / math.Pi
+}
+
+func SinToCos(sin float64) (float64, error) {
+	if !isInRange(sin, -1, 1) {
+		return 0, errors.New("正弦值超出范围 [-1, 1]")
+	}
+	return math.Sqrt(1 - sin*sin), nil
+}
+
+func CosToSin(cos float64) (float64, error) {
+	if !isInRange(cos, -1, 1) {
+		return 0, errors.New("余弦值超出范围 [-1, 1]")
+	}
+	return math.Sqrt(1 - cos*cos), nil
+}
+
+func SinSum(radA, radB float64) float64 {
+	return Sin(radA)*Cos(radB) + Cos(radA)*Sin(radB)
+}
+
+func SinDiff(radA, radB float64) float64 {
+	return Sin(radA)*Cos(radB) - Cos(radA)*Sin(radB)
+}
+
+func CosSum(radA, radB float64) float64 {
+	return Cos(radA)*Cos(radB) - Sin(radA)*Sin(radB)
+}
+
+func CosDiff(radA, radB float64) float64 {
+	return Cos(radA)*Cos(radB) + Sin(radA)*Sin(radB)
+}
+
+func SinDoubleAngle(rad float64) float64 {
+	return 2 * Sin(rad) * Cos(rad)
+}
+
+func CosDoubleAngle(rad float64) float64 {
+	return 2*Cos(rad)*Cos(rad) - 1
+}
+
+func TanDoubleAngle(rad float64) (float64, error) {
+	tan, err := Tan(rad)
+	if err != nil {
+		return 0, err
+	}
+	if math.Abs(1-tan*tan) < 1e-10 {
+		return 0, errors.New("tan(2θ)在π/4+kπ/2处无定义")
+	}
+	return (2 * tan) / (1 - tan*tan), nil
+}
+
+func SinHalfAngle(cos float64) (float64, error) {
+	if !isInRange(cos, -1, 1) {
+		return 0, errors.New("余弦值超出范围 [-1, 1]")
+	}
+	return math.Sqrt((1 - cos) / 2), nil
+}
+
+func CosHalfAngle(cos float64) (float64, error) {
+	if !isInRange(cos, -1, 1) {
+		return 0, errors.New("余弦值超出范围 [-1, 1]")
+	}
+	return math.Sqrt((1 + cos) / 2), nil
+}
+
+func TanHalfAngle(cos float64) (float64, error) {
+	if !isInRange(cos, -1, 1) {
+		return 0, errors.New("余弦值超出范围 [-1, 1]")
+	}
+	if math.Abs(1+cos) < 1e-10 {
+		return 0, errors.New("tan(θ/2)在π+2kπ处无定义")
+	}
+	return math.Sqrt((1 - cos) / (1 + cos)), nil
+}
