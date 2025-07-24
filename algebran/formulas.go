@@ -3,6 +3,7 @@
  * Repo:    go-zju-formulas
  * Created: 07/23/2025
  */
+
 // Package algebran 提供代数运算的基本功能
 // 导入路径: "go-zju-formulas/algebran"
 package algebran
