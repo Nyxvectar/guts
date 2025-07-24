@@ -23,13 +23,13 @@ type Triangle struct {
 }
 
 var (
-	lengthNegative  = "三角形不存在 [length<0]"       
-	resultNegative  = "三角形不存在 [square<0]"      
-	angleNegative   = "三角形不存在 [angle<0]"      
-	angleOutRange   = "三角形不存在 [angleOutRange]"  
-	angleFault      = "三角形不存在 [angleTotal!=Pi]" 
-	calibrationFail = "计算结果不一 [present!=previous]" 
-	calculateFail   = "无法计算     {!}"                
+	lengthNegative  = "三角形不存在 [length<0]"
+	resultNegative  = "三角形不存在 [square<0]"
+	angleNegative   = "三角形不存在 [angle<0]"
+	angleOutRange   = "三角形不存在 [angleOutRange]"
+	angleFault      = "三角形不存在 [angleTotal!=Pi]"
+	calibrationFail = "计算结果不一 [present!=previous]"
+	calculateFail   = "无法计算     {!}"
 )
 
 func LawOfSines(a, b, c, A, B, C float64) (float64, error) {
@@ -62,6 +62,7 @@ func LawOfCosines(a, b, C float64) (float64, error) {
 	if cSquared < 0 {
 		return 0, errors.New(resultNegative)
 	}
+
 	return math.Sqrt(cSquared), nil
 }
 
@@ -99,8 +100,8 @@ func Centroid(t Triangle) Vector2D {
 
 func Incenter(t Triangle) (Vector2D, error) {
 	a := distance(t.B, t.C)
-	b := distance(t.A, t.C) 
-	c := distance(t.A, t.B) 
+	b := distance(t.A, t.C)
+	c := distance(t.A, t.B)
 	if a <= 0 || b <= 0 || c <= 0 {
 		return Vector2D{}, errors.New(lengthNegative)
 	}
