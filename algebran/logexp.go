@@ -4,11 +4,6 @@
  * Created: 07/23/2025
  */
 
-//"指对互换式",
-//"对数运算法则",
-//"对数恒等式",
-//"平均增长率公式"
-
 package algebran
 
 import (
@@ -47,5 +42,15 @@ func LogEquation(base, x float64) (float64, error) {
 		return 0, errNew
 	} else {
 		return x, nil
+	}
+}
+
+func GrowthAvg(present, previous float64) (float64, error) {
+	if present == 0 {
+		var errNew = "起始值不得为零"
+		return 0, errors.New(errNew)
+	} else {
+		var avG = (present - previous) / present
+		return avG, nil
 	}
 }
