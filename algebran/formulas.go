@@ -4,10 +4,6 @@
  * Created: 07/23/2025
  */
 
-//"浓度不等式",
-//"绝对值三角不等式",
-//"柯西不等式"
-
 package algebran
 
 import (
@@ -61,5 +57,15 @@ func MeanInequality(u []float64) (float64, float64, float64, float64, error) {
 		Q = math.Sqrt(squareTotal / length)  //平方平均数
 
 		return H, G, A, Q, nil
+	}
+}
+
+func CauchyInequality(a, b, c, d float64) (float64, error) {
+	if a*d != b*c {
+		var errNew = "实参不满足柯西求最值条件"
+		return 0, errors.New(errNew)
+	} else {
+		var minimum = math.Pow(a*c+b*d, 2)
+		return minimum, nil
 	}
 }

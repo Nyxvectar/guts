@@ -7,6 +7,9 @@
 
 package main
 
-func main() {
+import "go-zju-formulas/algebran"
 
+func main() {
+	var Thes = []float64{1.6, 2.2, 3.5}
+	print(algebran.MeanInequality(Thes))
 }
