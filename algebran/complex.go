@@ -29,9 +29,11 @@ func ComplexMultiply(a, b Complex) Complex {
 
 func ComplexDivide(a, b Complex) Complex {
 	denominator := b.Real*b.Real + b.Imaginary*b.Imaginary
+
 	if math.Abs(denominator) < 1e-10 {
 		panic("complex division by zero")
 	}
+
 	return Complex{
 		Real:      (a.Real*b.Real + a.Imaginary*b.Imaginary) / denominator,
 		Imaginary: (a.Imaginary*b.Real - a.Real*b.Imaginary) / denominator,

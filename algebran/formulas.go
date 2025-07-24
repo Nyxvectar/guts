@@ -23,7 +23,6 @@ func MeanInequality(u []float64) (float64, float64, float64, float64, error) {
 	if len(u) == 0 {
 		return 0, 0, 0, 0, errors.New("不得传入空集")
 	}
-
 	for _, num := range u {
 		if num <= 0 {
 			return 0, 0, 0, 0, errors.New("集合内需全部为正数")
