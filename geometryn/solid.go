@@ -46,7 +46,7 @@ func VolumeCycle(s1, s2, h float64) (float64, error) {
 }
 
 func AreaSphere(r float64) (float64, error) {
-	if checker(r, 1) {
+	if checker(r, 0) {
 		return 4 * math.Pi * r * r, nil
 	} else {
 		return 0, errors.New(dntExist)
@@ -54,7 +54,7 @@ func AreaSphere(r float64) (float64, error) {
 }
 
 func VolumeSphere(r float64) (float64, error) {
-	if checker(r, 1) {
+	if checker(r, 0) {
 		return 4 * math.Pi * r * r * r / 3, nil
 	} else {
 		return 0, errors.New(dntExist)
