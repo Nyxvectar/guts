@@ -12,7 +12,7 @@ import (
 )
 
 var (
-	dntExist = "不存在这样的半径/高/母线/底面积"
+	dntExist = "不存在这样的几何体"
 )
 
 func checker(a, b float64) bool {
@@ -58,5 +58,35 @@ func VolumeSphere(r float64) (float64, error) {
 		return 4 * math.Pi * r * r * r / 3, nil
 	} else {
 		return 0, errors.New(dntExist)
+	}
+}
+
+func EulerTheorem(vertices, edges, faces uint64) (uint64, error) {
+	// 利用欧拉定理，待求的值设置为零即可返回该值的
+	// 欲求结果，或者全部传入以判断该几何体是否成立
+	if vertices == 0 {
+		if 2-faces+edges >= 0 {
+			return 2 - faces + edges, nil
+		} else {
+			return 0, errors.New(dntExist)
+		}
+	} else if edges == 0 {
+		if vertices+faces-2 >= 0 {
+			return vertices + faces - 2, nil
+		} else {
+			return 0, errors.New(dntExist)
+		}
+	} else if faces == 0 {
+		if 2+edges-vertices >= 0 {
+			return 2 + edges - vertices, nil
+		} else {
+			return 0, errors.New(dntExist)
+		}
+	} else {
+		if vertices-edges+faces == 2 {
+			return 0, nil
+		} else {
+			return 0, errors.New(dntExist)
+		}
 	}
 }
