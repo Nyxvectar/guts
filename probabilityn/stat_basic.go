@@ -4,9 +4,6 @@
  * Created: 07/23/2025
  */
 
-//"分层抽样平均数公式",
-//"分层抽样方差公式"
-
 package probabilityn
 
 import (
