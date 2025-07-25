@@ -21,3 +21,9 @@
 //"三正弦定理"
 
 package geometryn
+
+type SpatialCoordinateSys struct {
+	x float64
+	y float64
+	z float64
+}
