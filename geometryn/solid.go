@@ -4,10 +4,6 @@
  * Created: 07/23/2025
  */
 
-//"祖暅原理",
-//"球体表面积与体积公式",
-//"欧拉定理"
-
 package geometryn
 
 import (
@@ -44,6 +40,22 @@ func AreaCycle(r, h float64) (float64, error) {
 func VolumeCycle(s1, s2, h float64) (float64, error) {
 	if checker(s1, h) && s2 > 0 {
 		return (s1 + s2 + math.Sqrt(s1*s2)) * h / 3, nil
+	} else {
+		return 0, errors.New(dntExist)
+	}
+}
+
+func AreaSphere(r float64) (float64, error) {
+	if checker(r, 1) {
+		return 4 * math.Pi * r * r, nil
+	} else {
+		return 0, errors.New(dntExist)
+	}
+}
+
+func VolumeSphere(r float64) (float64, error) {
+	if checker(r, 1) {
+		return 4 * math.Pi * r * r * r / 3, nil
 	} else {
 		return 0, errors.New(dntExist)
 	}
