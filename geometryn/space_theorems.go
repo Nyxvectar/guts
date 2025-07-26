@@ -27,6 +27,7 @@ type Plane struct {
 
 var (
 	ErrZeroVector = errors.New("零向量没有方向")
+	ErrNotPer     = errors.New("两向量不垂直")
 	ErrNotCop     = errors.New("传入的两点不共面")
 	ErrNotPar     = errors.New("两向量不平行")
 )
@@ -197,7 +198,7 @@ func ArePlanePer(p1, p2 Plane) (bool, error) {
 	if n1.Magnitude() == 0 || n2.Magnitude() == 0 {
 		return false, ErrZeroVector
 	}
-	return math.Abs(n1.Dot(n2)) < 1e-9, nil
+	return math.Abs(n1.Dot(n2)) < 1e-10, nil
 }
 
 func IsLinePerToPlane(lineDir SpatialCoordinateSys, plane Plane) (bool, error) {
@@ -210,4 +211,21 @@ func IsLinePerToPlane(lineDir SpatialCoordinateSys, plane Plane) (bool, error) {
 	}
 	cross := lineDir.Cross(normal)
 	return cross.Magnitude() < 10, nil
+}
+
+func IsLinePerpendicularToPlaneByIntersection(lineDir SpatialCoordinateSys, p1, p2 Plane) (bool, error) {
+	arePerpendicular, err := ArePlanePer(p1, p2)
+	if err != nil {
+		return false, err
+	}
+	if !arePerpendicular {
+		return false, ErrNotPer
+	}
+	n1 := p1.Normal()
+	n2 := p2.Normal()
+	intersectionDir := n1.Cross(n2)
+	if math.Abs(lineDir.Dot(intersectionDir)) > 1e-9 {
+		return false, nil
+	}
+	return IsLinePerToPlane(lineDir, p2)
 }
