@@ -140,10 +140,27 @@ func ArePlanesParallel(p1, p2 Plane) (bool, error) {
 		return false, ErrZeroVector
 	}
 	cross := n1.Cross(n2)
-	return cross.Magnitude() < 1e-9, nil
+	// 利用的是两个平面的法向量平行来判定
+	return cross.Magnitude() < 1e-10, nil
 }
 
-func GetLinePlaneIntersectionLine(lineDir SpatialCoordinateSys, plane Plane) (SpatialCoordinateSys, error) {
+func GetPlanesIntersLine(p1, p2, intersectingPlane Plane) (SpatialCoordinateSys, SpatialCoordinateSys, error) {
+	areParallel, err := ArePlanesParallel(p1, p2)
+	if err != nil {
+		return SpatialCoordinateSys{}, SpatialCoordinateSys{}, err
+	}
+	if !areParallel {
+		return SpatialCoordinateSys{}, SpatialCoordinateSys{}, ErrNotParallel
+	}
+	n1 := p1.Normal()
+	n2 := intersectingPlane.Normal()
+	lineDir1 := n1.Cross(n2)
+	n3 := p2.Normal()
+	lineDir2 := n3.Cross(n2)
+	return lineDir1, lineDir2, nil
+}
+
+func GetLinePlaneIntersLine(lineDir SpatialCoordinateSys, plane Plane) (SpatialCoordinateSys, error) {
 	normal := plane.Normal()
 	if lineDir.Magnitude() == 0 || normal.Magnitude() == 0 {
 		return SpatialCoordinateSys{}, ErrZeroVector
