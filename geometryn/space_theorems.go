@@ -6,6 +6,8 @@
 
 package geometryn
 
+import "math"
+
 type SpatialCoordinateSys struct {
 	x float64
 	y float64
@@ -43,4 +45,8 @@ func (v SpatialCoordinateSys) Cross(u SpatialCoordinateSys) SpatialCoordinateSys
 		v.z*u.x - v.x*u.z,
 		v.x*u.y - v.y*u.x,
 	}
+}
+
+func (v SpatialCoordinateSys) Magnitude() float64 {
+	return math.Sqrt(v.x*v.x + v.y*v.y + v.z*v.z)
 }
