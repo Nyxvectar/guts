@@ -90,3 +90,10 @@ func (v SpatialCoordinateSys) IsEOrSuppleAngle(u SpatialCoordinateSys) (bool, er
 	var dot = vNorm.Dot(uNorm)
 	return math.Abs(math.Abs(dot)-1) < 1e-10, nil
 }
+
+func IsLineParaToPlane(line, planeNorm SpatialCoordinateSys) (bool, error) {
+	if line.Magnitude() == 0 || planeNorm.Magnitude() == 0 {
+		return false, errors.New(ErrZeroVector)
+	}
+	return math.Abs(line.Dot(planeNorm)) < 1e-10, nil
+}
