@@ -13,24 +13,31 @@ type Complex struct {
 	Imaginary float64
 }
 
-func ComplexAdd(a, b Complex) Complex {
+var (
+	errDivideByZero = "Panic: 试图除以零或者及其接近零的数"
+)
+
+// Add 复数加法
+func Add(a, b Complex) Complex {
 	return Complex{
 		Real:      a.Real + b.Real,
 		Imaginary: a.Imaginary + b.Imaginary,
 	}
 }
 
-func ComplexMultiply(a, b Complex) Complex {
+// Multiply 复数乘法
+func Multiply(a, b Complex) Complex {
 	return Complex{
 		Real:      a.Real*b.Real - a.Imaginary*b.Imaginary,
 		Imaginary: a.Real*b.Imaginary + a.Imaginary*b.Real,
 	}
 }
 
-func ComplexDivide(a, b Complex) Complex {
+// Divide 复数除法
+func Divide(a, b Complex) Complex {
 	denominator := b.Real*b.Real + b.Imaginary*b.Imaginary
 	if math.Abs(denominator) < 1e-10 {
-		panic("Panic: 试图除以零或者及其接近零的数")
+		panic(errDivideByZero)
 	}
 	return Complex{
 		Real:      (a.Real*b.Real + a.Imaginary*b.Imaginary) / denominator,
@@ -38,13 +45,15 @@ func ComplexDivide(a, b Complex) Complex {
 	}
 }
 
-func ComplexConjugate(a Complex) Complex {
+// Conjugate 复数共轭
+func Conjugate(a Complex) Complex {
 	return Complex{
 		Real:      a.Real,
 		Imaginary: -a.Imaginary,
 	}
 }
 
-func ComplexModulus(a Complex) float64 {
+// Modulus 复数模长
+func Modulus(a Complex) float64 {
 	return math.Sqrt(a.Real*a.Real + a.Imaginary*a.Imaginary)
 }

@@ -12,81 +12,74 @@ import (
 )
 
 var (
-	dntExist = "不存在这样的几何体"
+	errInvalidDimensions = "为负数的无效参数"
+	errEulerViolation    = "不满足欧拉公式"
 )
 
-func checker(a, b float64) bool {
-	if a < 0 || b < 0 {
-		return false
-	} else {
-		return true
-	}
-}
-
-// 注意到台体的公式事实上是通用于圆柱体和圆锥的
-// 即后二者的公式只是台体公式的特殊情况，那么我
-// 们就可以只使用台体公式来同时解决此三者的问题
-// 对于圆锥，认为她的其中一个地面半径和面积都为
-// 零即可；对于圆柱体，认为其上下面是相同的即可
-
-func AreaCycle(r, h float64) (float64, error) {
-	if checker(r, h) {
-		return 2 * math.Pi * r * (r + h), nil
-	} else {
-		return 0, errors.New(dntExist)
-	}
-}
-
-func VolumeCycle(s1, s2, h float64) (float64, error) {
-	if checker(s1, h) && s2 > 0 {
-		return (s1 + s2 + math.Sqrt(s1*s2)) * h / 3, nil
-	} else {
-		return 0, errors.New(dntExist)
-	}
-}
-
-func AreaSphere(r float64) (float64, error) {
-	if checker(r, 0) {
-		return 4 * math.Pi * r * r, nil
-	} else {
-		return 0, errors.New(dntExist)
-	}
-}
-
-func VolumeSphere(r float64) (float64, error) {
-	if checker(r, 0) {
-		return 4 * math.Pi * r * r * r / 3, nil
-	} else {
-		return 0, errors.New(dntExist)
-	}
-}
-
-func EulerTheorem(vertices, edges, faces uint64) (uint64, error) {
-	// 利用欧拉定理，待求的值设置为零即可返回该值的
-	// 欲求结果，或者全部传入以判断该几何体是否成立
-	if vertices == 0 {
-		if 2-faces+edges >= 0 {
-			return 2 - faces + edges, nil
-		} else {
-			return 0, errors.New(dntExist)
-		}
-	} else if edges == 0 {
-		if vertices+faces-2 >= 0 {
-			return vertices + faces - 2, nil
-		} else {
-			return 0, errors.New(dntExist)
-		}
-	} else if faces == 0 {
-		if 2+edges-vertices >= 0 {
-			return 2 + edges - vertices, nil
-		} else {
-			return 0, errors.New(dntExist)
-		}
-	} else {
-		if vertices-edges+faces == 2 {
-			return 0, nil
-		} else {
-			return 0, errors.New(dntExist)
+// IsValidDimensions 检查尺寸参数是否为非负数
+func IsValidDimensions(dims ...float64) bool {
+	for _, dim := range dims {
+		if dim < 0 {
+			return false
 		}
 	}
+	return true
+}
+
+// CylinderSurfaceArea 计算圆柱体表面积
+func CylinderSurfaceArea(r, h float64) (float64, error) {
+	if !IsValidDimensions(r, h) {
+		return 0, errors.New(errInvalidDimensions)
+	}
+	return 2 * math.Pi * r * (r + h), nil
+}
+
+// FrustumVolume 计算台体体积(通用公式，支持圆柱、圆锥)
+func FrustumVolume(s1, s2, h float64) (float64, error) {
+	if !IsValidDimensions(s1, s2, h) {
+		return 0, errors.New(errInvalidDimensions)
+	}
+	return (s1 + s2 + math.Sqrt(s1*s2)) * h / 3, nil
+}
+
+// SphereSurfaceArea 计算球体表面积
+func SphereSurfaceArea(r float64) (float64, error) {
+	if !IsValidDimensions(r) {
+		return 0, errors.New(errInvalidDimensions)
+	}
+	return 4 * math.Pi * math.Pow(r, 2), nil
+}
+
+// SphereVolume 计算球体体积
+func SphereVolume(r float64) (float64, error) {
+	if !IsValidDimensions(r) {
+		return 0, errors.New(errInvalidDimensions)
+	}
+	return 4 * math.Pi * math.Pow(r, 3) / 3, nil
+}
+
+// EulerCharacteristic 验证或计算多面体的欧拉示性数
+func EulerCharacteristic(v, e, f uint64) (uint64, error) {
+	if v == 0 {
+		if e < f || 2-f+e < 0 {
+			return 0, errors.New(errInvalidDimensions)
+		}
+		return 2 - f + e, nil
+	}
+	if e == 0 {
+		if v+f < 2 {
+			return 0, errors.New(errInvalidDimensions)
+		}
+		return v + f - 2, nil
+	}
+	if f == 0 {
+		if e < v-2 {
+			return 0, errors.New(errInvalidDimensions)
+		}
+		return 2 + e - v, nil
+	}
+	if v-e+f != 2 {
+		return 0, errors.New(errEulerViolation)
+	}
+	return 0, nil
 }
