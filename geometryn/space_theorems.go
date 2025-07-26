@@ -17,6 +17,14 @@ type SpatialCoordinateSys struct {
 	z float64
 }
 
+// 平面方程为ax + by + cz + d = 0
+type Plane struct {
+	a float64
+	b float64
+	c float64
+	d float64
+}
+
 var (
 	ErrZeroVector = "零向量没有方向"
 )
@@ -68,4 +76,17 @@ func (v SpatialCoordinateSys) Normalize() (SpatialCoordinateSys, error) {
 		v.y / mag,
 		v.z / mag,
 	}, nil
+}
+
+func (v SpatialCoordinateSys) IsEOrSuppleAngle(u SpatialCoordinateSys) (bool, error) {
+	var vNorm, errV = v.Normalize()
+	var uNorm, errU = u.Normalize()
+	if errV != nil {
+		return false, errV
+	}
+	if errU != nil {
+		return false, errU
+	}
+	var dot = vNorm.Dot(uNorm)
+	return math.Abs(math.Abs(dot)-1) < 1e-10, nil
 }
