@@ -213,7 +213,7 @@ func IsLinePerToPlane(lineDir SpatialCoordinateSys, plane Plane) (bool, error) {
 	return cross.Magnitude() < 10, nil
 }
 
-func IsLinePerpendicularToPlaneByIntersection(lineDir SpatialCoordinateSys, p1, p2 Plane) (bool, error) {
+func IsLinePerToPlaneByInters(lineDir SpatialCoordinateSys, p1, p2 Plane) (bool, error) {
 	arePerpendicular, err := ArePlanePer(p1, p2)
 	if err != nil {
 		return false, err
@@ -224,8 +224,25 @@ func IsLinePerpendicularToPlaneByIntersection(lineDir SpatialCoordinateSys, p1, 
 	n1 := p1.Normal()
 	n2 := p2.Normal()
 	intersectionDir := n1.Cross(n2)
-	if math.Abs(lineDir.Dot(intersectionDir)) > 1e-9 {
+	if math.Abs(lineDir.Dot(intersectionDir)) > 1e-10 {
 		return false, nil
 	}
 	return IsLinePerToPlane(lineDir, p2)
+}
+
+func computeProjection(v, normal SpatialCoordinateSys) SpatialCoordinateSys {
+	normalized, errN := normal.Normalize()
+	if errN != nil {
+		panic(1)
+	}
+	dot := v.Dot(normalized)
+	return v.Subtract(normalized.Multiply(dot))
+}
+
+func IsLinePerToOblique(lineDir, obliqueDir, planeNormal SpatialCoordinateSys) (bool, error) {
+	proj := computeProjection(obliqueDir, planeNormal)
+	if math.Abs(lineDir.Dot(proj)) > 1e-10 {
+		return false, nil
+	}
+	return math.Abs(lineDir.Dot(obliqueDir)) < 1e-10, nil
 }
