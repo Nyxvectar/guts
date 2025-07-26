@@ -17,7 +17,7 @@ type SpatialCoordinateSys struct {
 	z float64
 }
 
-// 平面方程为ax + by + cz + d = 0
+// !! 平面方程为 ax + by + cz + d = 0
 type Plane struct {
 	a float64
 	b float64
@@ -108,19 +108,25 @@ func NewPlane(pa, pb, pc SpatialCoordinateSys) (Plane, error) {
 	}
 	var a, b, c = normal.x, normal.y, normal.z
 	var d = -(a*pa.x + b*pa.y + c*pa.z)
-
 	// 平面点法式方程的推导原理：
-	// 1. 平面的法向量(normal)与平面内任意向量垂直
-	// 2. 已知平面上一点P0(x0,y0,z0)和法向量(A,B,C)
-	// 3. 对于平面上任意点P(x,y,z)，向量PP0与法向量点积为0
-	//    即: A(x-x0) + B(y-y0) + C(z-z0) = 0
-	// 4. 展开后得到一般式: Ax + By + Cz + D = 0，其中D=-(Ax0+By0+Cz0)
-	// 此处使用点pa(x0,y0,z0)计算参数D
-	
+	// 平面的法向量(normal)与平面内任意向量垂直
+	// 已知平面上一点P0(x0,y0,z0)和法向量(A,B,C)
+	// 对于平面上任意点P(x,y,z)，向量PP0与法向量
+	// 点积为0即: A(x-x0) + B(y-y0) + C(z-z0)= 0
+	// 展开后得到一般式: Ax + By + Cz + D = 0.其
+	// 中D=-(Ax0+By0+Cz0)用点pa(x0,y0,z0)计算得D
 	return Plane{
 		a,
 		b,
 		c,
 		d,
 	}, nil
+}
+
+func (p Plane) Normal() SpatialCoordinateSys {
+	return SpatialCoordinateSys{p.a, p.b, p.c}
+	// 到这里仍然是对平面一般式的运用，
+	// 平面一般方程的定义中A,B,C 三个值
+	// 本身就定义了其法向量，所以在此我
+	// 们可以高效的求出她。
 }
