@@ -240,6 +240,42 @@ func computeProjection(v, normal SpatialCoordinateSys) SpatialCoordinateSys {
 	return v.Subtract(normalized.Multiply(dot))
 }
 
+func ProjectedArea(originalArea float64, normal1, normal2 SpatialCoordinateSys) (float64, error) {
+	if originalArea < 0 {
+		return 0, ErrInvalid
+	}
+	if normal1.Magnitude() == 0 || normal2.Magnitude() == 0 {
+		return 0, ErrZeroVector
+	}
+	cosTheta := math.Abs(normal1.Dot(normal2)) / (normal1.Magnitude() * normal2.Magnitude())
+	return originalArea * cosTheta, nil
+}
+
+func MinimumAngleBetweenLineAndPlane(lineDir SpatialCoordinateSys, plane Plane) (float64, error) {
+	if lineDir.Magnitude() == 0 {
+		return 0, ErrZeroVector
+	}
+	normal := plane.Normal()
+	if normal.Magnitude() == 0 {
+		return 0, ErrZeroVector
+	}
+	dot := lineDir.Dot(normal)
+	cosTheta := dot / (lineDir.Magnitude() * normal.Magnitude())
+	sinAlpha := math.Abs(cosTheta)
+	alpha := math.Asin(sinAlpha)
+	return alpha, nil
+}
+
+func MaximumAngleBetweenSkewLines(lineDir1, lineDir2 SpatialCoordinateSys) (float64, error) {
+	if lineDir1.Magnitude() == 0 || lineDir2.Magnitude() == 0 {
+		return 0, ErrZeroVector
+	}
+	dot := lineDir1.Dot(lineDir2)
+	cosTheta := dot / (lineDir1.Magnitude() * lineDir2.Magnitude())
+	theta := math.Acos(math.Abs(cosTheta))
+	return theta, nil
+}
+
 func IsLinePerToOblique(lineDir, obliqueDir, planeNormal SpatialCoordinateSys) (bool, error) {
 	proj := computeProjection(obliqueDir, planeNormal)
 	if math.Abs(lineDir.Dot(proj)) > 1e-10 {
