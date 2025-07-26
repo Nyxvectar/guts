@@ -14,33 +14,35 @@ type Vector struct {
 	Z float64
 }
 
-func VectorModulus(v Vector) float64 {
-	return math.Hypot(v.X, math.Hypot(v.Y, v.Z))
+// Magnitude 计算向量模长
+func (v Vector) Magnitude() float64 {
+	return math.Sqrt(v.X*v.X + v.Y*v.Y + v.Z*v.Z)
 }
 
-func DeterminantLinear(a, b Vector) bool {
-	if isZeroVector(a) || isZeroVector(b) {
+// AreCollinear 判断两向量是否共线
+func AreCollinear(a, b Vector) bool {
+	if a.isZero() || b.isZero() {
 		return true
 	}
-	if !almostEqual(a.X*b.Y, a.Y*b.X) ||
-		!almostEqual(a.X*b.Z, a.Z*b.X) ||
-		!almostEqual(a.Y*b.Z, a.Z*b.Y) {
-		return false
-	}
-	return true
+	return almostEqual(a.X*b.Y, a.Y*b.X) &&
+		almostEqual(a.X*b.Z, a.Z*b.X) &&
+		almostEqual(a.Y*b.Z, a.Z*b.Y)
 }
 
-func QuantityProduct(a, b Vector) float64 {
+// DotProduct 计算向量点积
+func DotProduct(a, b Vector) float64 {
 	return a.X*b.X + a.Y*b.Y + a.Z*b.Z
 }
 
-func VectorAngleCos(a, b Vector) float64 {
-	if isZeroVector(a) || isZeroVector(b) {
+// CosAngle 计算两向量夹角余弦值
+func CosAngle(a, b Vector) float64 {
+	if a.isZero() || b.isZero() {
 		return 0
 	}
-	return QuantityProduct(a, b) / (VectorModulus(a) * VectorModulus(b))
+	return DotProduct(a, b) / (a.Magnitude() * b.Magnitude())
 }
 
+// CrossProduct 计算向量叉积
 func CrossProduct(a, b Vector) Vector {
 	return Vector{
 		a.Y*b.Z - a.Z*b.Y,
@@ -49,13 +51,15 @@ func CrossProduct(a, b Vector) Vector {
 	}
 }
 
-func isZeroVector(v Vector) bool {
+// isZero 判断向量是否为零向量
+func (v Vector) isZero() bool {
 	const epsilon = 1e-10
 	return math.Abs(v.X) < epsilon &&
 		math.Abs(v.Y) < epsilon &&
 		math.Abs(v.Z) < epsilon
 }
 
+// almostEqual 判断两个浮点数是否近似相等
 func almostEqual(a, b float64) bool {
 	const epsilon = 1e-10
 	return math.Abs(a-b) < epsilon ||
