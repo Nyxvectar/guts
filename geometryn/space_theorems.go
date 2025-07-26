@@ -191,6 +191,15 @@ func GetLinePlaneIntersLine(lineDir SpatialCoordinateSys, plane Plane) (SpatialC
 	return lineDir.Cross(normal), nil
 }
 
+func ArePlanePer(p1, p2 Plane) (bool, error) {
+	n1 := p1.Normal()
+	n2 := p2.Normal()
+	if n1.Magnitude() == 0 || n2.Magnitude() == 0 {
+		return false, ErrZeroVector
+	}
+	return math.Abs(n1.Dot(n2)) < 1e-9, nil
+}
+
 func IsLinePerToPlane(lineDir SpatialCoordinateSys, plane Plane) (bool, error) {
 	if lineDir.Magnitude() == 0 {
 		return false, ErrZeroVector
