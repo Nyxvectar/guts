@@ -27,8 +27,10 @@ type Plane struct {
 
 var (
 	ErrZeroVector = errors.New("零向量没有方向")
+	ErrNotPer     = errors.New("两向量不垂直")
 	ErrNotCop     = errors.New("传入的两点不共面")
 	ErrNotPar     = errors.New("两向量不平行")
+	ErrInvalid    = errors.New("给定的参数")
 )
 
 func NewSpatialPoint(x, y, z float64) SpatialCoordinateSys {
@@ -197,7 +199,7 @@ func ArePlanePer(p1, p2 Plane) (bool, error) {
 	if n1.Magnitude() == 0 || n2.Magnitude() == 0 {
 		return false, ErrZeroVector
 	}
-	return math.Abs(n1.Dot(n2)) < 1e-9, nil
+	return math.Abs(n1.Dot(n2)) < 1e-10, nil
 }
 
 func IsLinePerToPlane(lineDir SpatialCoordinateSys, plane Plane) (bool, error) {
@@ -210,4 +212,92 @@ func IsLinePerToPlane(lineDir SpatialCoordinateSys, plane Plane) (bool, error) {
 	}
 	cross := lineDir.Cross(normal)
 	return cross.Magnitude() < 10, nil
+}
+
+func IsLinePerToPlaneByInters(lineDir SpatialCoordinateSys, p1, p2 Plane) (bool, error) {
+	arePerpendicular, err := ArePlanePer(p1, p2)
+	if err != nil {
+		return false, err
+	}
+	if !arePerpendicular {
+		return false, ErrNotPer
+	}
+	n1 := p1.Normal()
+	n2 := p2.Normal()
+	intersectionDir := n1.Cross(n2)
+	if math.Abs(lineDir.Dot(intersectionDir)) > 1e-10 {
+		return false, nil
+	}
+	return IsLinePerToPlane(lineDir, p2)
+}
+
+func computeProjection(v, normal SpatialCoordinateSys) SpatialCoordinateSys {
+	normalized, errN := normal.Normalize()
+	if errN != nil {
+		panic(1)
+	}
+	dot := v.Dot(normalized)
+	return v.Subtract(normalized.Multiply(dot))
+}
+
+func ProjectedArea(originalArea float64, normal1, normal2 SpatialCoordinateSys) (float64, error) {
+	if originalArea < 0 {
+		return 0, ErrInvalid
+	}
+	if normal1.Magnitude() == 0 || normal2.Magnitude() == 0 {
+		return 0, ErrZeroVector
+	}
+	cosTheta := math.Abs(normal1.Dot(normal2)) / (normal1.Magnitude() * normal2.Magnitude())
+	return originalArea * cosTheta, nil
+}
+
+func MinimumAngleBetweenLineAndPlane(lineDir SpatialCoordinateSys, plane Plane) (float64, error) {
+	if lineDir.Magnitude() == 0 {
+		return 0, ErrZeroVector
+	}
+	normal := plane.Normal()
+	if normal.Magnitude() == 0 {
+		return 0, ErrZeroVector
+	}
+	dot := lineDir.Dot(normal)
+	cosTheta := dot / (lineDir.Magnitude() * normal.Magnitude())
+	sinAlpha := math.Abs(cosTheta)
+	alpha := math.Asin(sinAlpha)
+	return alpha, nil
+}
+
+func MaximumAngleBetweenSkewLines(lineDir1, lineDir2 SpatialCoordinateSys) (float64, error) {
+	if lineDir1.Magnitude() == 0 || lineDir2.Magnitude() == 0 {
+		return 0, ErrZeroVector
+	}
+	dot := lineDir1.Dot(lineDir2)
+	cosTheta := dot / (lineDir1.Magnitude() * lineDir2.Magnitude())
+	theta := math.Acos(math.Abs(cosTheta))
+	return theta, nil
+}
+
+func IsLinePerToOblique(lineDir, obliqueDir, planeNormal SpatialCoordinateSys) (bool, error) {
+	proj := computeProjection(obliqueDir, planeNormal)
+	if math.Abs(lineDir.Dot(proj)) > 1e-10 {
+		return false, nil
+	}
+	return math.Abs(lineDir.Dot(obliqueDir)) < 1e-10, nil
+}
+
+func ThreeCosineTheorem(angleOAB, angleBAC float64) (float64, error) {
+	if angleOAB < 0 || angleOAB > math.Pi/2 ||
+		angleBAC < 0 || angleBAC > math.Pi/2 {
+		return 0, ErrInvalid
+	}
+	cosOAC := math.Cos(angleOAB) * math.Cos(angleBAC)
+	return cosOAC, nil
+}
+
+func ThreeSineTheorem(angleOAC, angleAOC float64) (float64, error) {
+	if angleOAC < 0 || angleOAC > math.Pi/2 ||
+		angleAOC < 0 || angleAOC > math.Pi/2 {
+		return 0, ErrInvalid
+	}
+	sinOAB := math.Sin(angleOAC) * math.Sin(angleAOC)
+	return sinOAB, nil
 }
