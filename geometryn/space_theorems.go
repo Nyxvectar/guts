@@ -26,8 +26,9 @@ type Plane struct {
 }
 
 var (
-	ErrZeroVector = "零向量没有方向"
+	ErrZeroVector = errors.New("零向量没有方向")
 	ErrNotCop     = errors.New("传入的两点不共面")
+	ErrNotPar     = errors.New("两向量不平行")
 )
 
 func NewSpatialPoint(x, y, z float64) SpatialCoordinateSys {
@@ -70,7 +71,7 @@ func (v SpatialCoordinateSys) Magnitude() float64 {
 func (v SpatialCoordinateSys) Normalize() (SpatialCoordinateSys, error) {
 	var mag = v.Magnitude()
 	if mag == 0 {
-		return SpatialCoordinateSys{}, errors.New(ErrZeroVector)
+		return SpatialCoordinateSys{}, ErrZeroVector
 	}
 	return SpatialCoordinateSys{
 		v.x / mag,
@@ -94,7 +95,7 @@ func (v SpatialCoordinateSys) IsEOrSuppleAngle(u SpatialCoordinateSys) (bool, er
 
 func IsLineParaToPlane(line, planeNorm SpatialCoordinateSys) (bool, error) {
 	if line.Magnitude() == 0 || planeNorm.Magnitude() == 0 {
-		return false, errors.New(ErrZeroVector)
+		return false, ErrZeroVector
 	}
 	return math.Abs(line.Dot(planeNorm)) < 1e-10, nil
 }
@@ -129,4 +130,19 @@ func (p Plane) Normal() SpatialCoordinateSys {
 	// 平面一般方程的定义中A,B,C 三个值
 	// 本身就定义了其法向量，所以在此我
 	// 们可以高效的求出她。
+}
+
+func GetLinePlaneIntersectionLine(lineDir SpatialCoordinateSys, plane Plane) (SpatialCoordinateSys, error) {
+	normal := plane.Normal()
+	if lineDir.Magnitude() == 0 || normal.Magnitude() == 0 {
+		return SpatialCoordinateSys{}, ErrZeroVector
+	}
+	isParallel, err := IsLineParaToPlane(lineDir, normal)
+	if err != nil {
+		return SpatialCoordinateSys{}, err
+	}
+	if !isParallel {
+		return SpatialCoordinateSys{}, ErrNotPar
+	}
+	return lineDir.Cross(normal), nil
 }
