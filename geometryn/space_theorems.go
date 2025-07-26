@@ -30,6 +30,7 @@ var (
 	ErrNotPer     = errors.New("两向量不垂直")
 	ErrNotCop     = errors.New("传入的两点不共面")
 	ErrNotPar     = errors.New("两向量不平行")
+	ErrInvalid    = errors.New("给定的参数")
 )
 
 func NewSpatialPoint(x, y, z float64) SpatialCoordinateSys {
@@ -245,4 +246,22 @@ func IsLinePerToOblique(lineDir, obliqueDir, planeNormal SpatialCoordinateSys) (
 		return false, nil
 	}
 	return math.Abs(lineDir.Dot(obliqueDir)) < 1e-10, nil
+}
+
+func ThreeCosineTheorem(angleOAB, angleBAC float64) (float64, error) {
+	if angleOAB < 0 || angleOAB > math.Pi/2 ||
+		angleBAC < 0 || angleBAC > math.Pi/2 {
+		return 0, ErrInvalid
+	}
+	cosOAC := math.Cos(angleOAB) * math.Cos(angleBAC)
+	return cosOAC, nil
+}
+
+func ThreeSineTheorem(angleOAC, angleAOC float64) (float64, error) {
+	if angleOAC < 0 || angleOAC > math.Pi/2 ||
+		angleAOC < 0 || angleAOC > math.Pi/2 {
+		return 0, ErrInvalid
+	}
+	sinOAB := math.Sin(angleOAC) * math.Sin(angleAOC)
+	return sinOAB, nil
 }
