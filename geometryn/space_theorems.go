@@ -150,7 +150,7 @@ func GetPlanesIntersLine(p1, p2, intersectingPlane Plane) (SpatialCoordinateSys,
 		return SpatialCoordinateSys{}, SpatialCoordinateSys{}, err
 	}
 	if !areParallel {
-		return SpatialCoordinateSys{}, SpatialCoordinateSys{}, ErrNotParallel
+		return SpatialCoordinateSys{}, SpatialCoordinateSys{}, ErrNotPar
 	}
 	n1 := p1.Normal()
 	n2 := intersectingPlane.Normal()
@@ -173,4 +173,16 @@ func GetLinePlaneIntersLine(lineDir SpatialCoordinateSys, plane Plane) (SpatialC
 		return SpatialCoordinateSys{}, ErrNotPar
 	}
 	return lineDir.Cross(normal), nil
+}
+
+func IsLinePerToPlane(lineDir SpatialCoordinateSys, plane Plane) (bool, error) {
+	if lineDir.Magnitude() == 0 {
+		return false, ErrZeroVector
+	}
+	normal := plane.Normal()
+	if normal.Magnitude() == 0 {
+		return false, ErrZeroVector
+	}
+	cross := lineDir.Cross(normal)
+	return cross.Magnitude() < 10, nil
 }
