@@ -17,7 +17,7 @@ type SpatialCoordinateSys struct {
 	z float64
 }
 
-// !! 平面方程为 ax + by + cz + d = 0
+// Plane !! 平面方程为 ax + by + cz + d = 0
 type Plane struct {
 	a float64
 	b float64
@@ -141,6 +141,22 @@ func ArePlanesParallel(p1, p2 Plane) (bool, error) {
 	}
 	cross := n1.Cross(n2)
 	// 利用的是两个平面的法向量平行来判定
+	return cross.Magnitude() < 1e-10, nil
+}
+
+func AreLinesPerToSamePlane(lineDir1, lineDir2 SpatialCoordinateSys, plane Plane) (bool, error) {
+	perp1, err := IsLinePerToPlane(lineDir1, plane)
+	if err != nil {
+		return false, err
+	}
+	perp2, err := IsLinePerToPlane(lineDir2, plane)
+	if err != nil {
+		return false, err
+	}
+	if !perp1 || !perp2 {
+		return false, nil
+	}
+	cross := lineDir1.Cross(lineDir2)
 	return cross.Magnitude() < 1e-10, nil
 }
 
