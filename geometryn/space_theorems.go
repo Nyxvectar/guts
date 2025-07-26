@@ -27,6 +27,7 @@ type Plane struct {
 
 var (
 	ErrZeroVector = "零向量没有方向"
+	ErrNotCop     = errors.New("传入的两点不共面")
 )
 
 func NewSpatialPoint(x, y, z float64) SpatialCoordinateSys {
@@ -96,4 +97,30 @@ func IsLineParaToPlane(line, planeNorm SpatialCoordinateSys) (bool, error) {
 		return false, errors.New(ErrZeroVector)
 	}
 	return math.Abs(line.Dot(planeNorm)) < 1e-10, nil
+}
+
+func NewPlane(pa, pb, pc SpatialCoordinateSys) (Plane, error) {
+	var vAB = pb.Subtract(pa)
+	var vAC = pc.Subtract(pa)
+	var normal = vAB.Cross(vAC)
+	if normal.Magnitude() == 0 {
+		return Plane{}, ErrNotCop
+	}
+	var a, b, c = normal.x, normal.y, normal.z
+	var d = -(a*pa.x + b*pa.y + c*pa.z)
+
+	// 平面点法式方程的推导原理：
+	// 1. 平面的法向量(normal)与平面内任意向量垂直
+	// 2. 已知平面上一点P0(x0,y0,z0)和法向量(A,B,C)
+	// 3. 对于平面上任意点P(x,y,z)，向量PP0与法向量点积为0
+	//    即: A(x-x0) + B(y-y0) + C(z-z0) = 0
+	// 4. 展开后得到一般式: Ax + By + Cz + D = 0，其中D=-(Ax0+By0+Cz0)
+	// 此处使用点pa(x0,y0,z0)计算参数D
+	
+	return Plane{
+		a,
+		b,
+		c,
+		d,
+	}, nil
 }
