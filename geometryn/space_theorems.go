@@ -132,6 +132,17 @@ func (p Plane) Normal() SpatialCoordinateSys {
 	// 们可以高效的求出她。
 }
 
+func ArePlanesParallel(p1, p2 Plane) (bool, error) {
+	n1 := p1.Normal()
+	n2 := p2.Normal()
+
+	if n1.Magnitude() == 0 || n2.Magnitude() == 0 {
+		return false, ErrZeroVector
+	}
+	cross := n1.Cross(n2)
+	return cross.Magnitude() < 1e-9, nil
+}
+
 func GetLinePlaneIntersectionLine(lineDir SpatialCoordinateSys, plane Plane) (SpatialCoordinateSys, error) {
 	normal := plane.Normal()
 	if lineDir.Magnitude() == 0 || normal.Magnitude() == 0 {
