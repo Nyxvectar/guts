@@ -6,13 +6,20 @@
 
 package geometryn
 
-import "math"
+import (
+	"errors"
+	"math"
+)
 
 type SpatialCoordinateSys struct {
 	x float64
 	y float64
 	z float64
 }
+
+var (
+	ErrZeroVector = "零向量没有方向"
+)
 
 func NewSpatialPoint(x, y, z float64) SpatialCoordinateSys {
 	return SpatialCoordinateSys{x, y, z}
@@ -49,4 +56,16 @@ func (v SpatialCoordinateSys) Cross(u SpatialCoordinateSys) SpatialCoordinateSys
 
 func (v SpatialCoordinateSys) Magnitude() float64 {
 	return math.Sqrt(v.x*v.x + v.y*v.y + v.z*v.z)
+}
+
+func (v SpatialCoordinateSys) Normalize() (SpatialCoordinateSys, error) {
+	var mag = v.Magnitude()
+	if mag == 0 {
+		return SpatialCoordinateSys{}, errors.New(ErrZeroVector)
+	}
+	return SpatialCoordinateSys{
+		v.x / mag,
+		v.y / mag,
+		v.z / mag,
+	}, nil
 }
