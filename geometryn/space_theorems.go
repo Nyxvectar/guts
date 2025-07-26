@@ -22,4 +22,25 @@ func (v SpatialCoordinateSys) Add(u SpatialCoordinateSys) SpatialCoordinateSys {
 
 func (v SpatialCoordinateSys) Subtract(u SpatialCoordinateSys) SpatialCoordinateSys {
 	return SpatialCoordinateSys{v.x - u.x, v.y - u.y, v.z - u.z}
+	// vectorAB := pointB.Subtract(pointA)
+}
+
+func (v SpatialCoordinateSys) Multiply(scalar float64) SpatialCoordinateSys {
+	return SpatialCoordinateSys{
+		v.x * scalar,
+		v.y * scalar,
+		v.z * scalar,
+	}
+}
+
+func (v SpatialCoordinateSys) Dot(u SpatialCoordinateSys) float64 {
+	return v.x*u.x + v.y*u.y + v.z*u.z
+}
+
+func (v SpatialCoordinateSys) Cross(u SpatialCoordinateSys) SpatialCoordinateSys {
+	return SpatialCoordinateSys{
+		v.y*u.z - v.z*u.y,
+		v.z*u.x - v.x*u.z,
+		v.x*u.y - v.y*u.x,
+	}
 }
