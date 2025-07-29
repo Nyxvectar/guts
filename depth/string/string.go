@@ -6,6 +6,8 @@
 
 package string
 
+import "fmt"
+
 func GutsString() {
 	// 为了判定字符，给每个字符设置一个编码。
 	// 出于读取的需要，派定一个不同区间适用的格式，一般标头。
@@ -23,7 +25,11 @@ func GutsString() {
 	// 除此以外，还有另外一种修改的方式，强制转换为slice：
 	var stringExam = ([]byte)(stringDemo)
 	stringExam[2] = 'a'
-	// 这里不用“”,需要rune(符文)类型
-	// 此时可以实现同样的效果
-	print(stringDemo, stringExam)
+	fmt.Printf(stringDemo, stringExam)
+	// 注意，slice 的打印请使用fmt包提供的print
+	//       否则默认print直接打印的将是内存地址。
+	//       这种在格式上的差别也是为什么我们日常
+	//       更加推荐fmt.Print等的原因.
+	// 注意，slice 可以实现对原来内存地址的指向，
+	// 如此即便是转换了类型，也无法修改这一string的值。
 }
