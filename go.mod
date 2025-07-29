@@ -1,3 +1,3 @@
-module go-zju-formulas
+module guts
 
 go 1.24
