@@ -24,19 +24,18 @@ func GutsHash() {
 	{
 		// 为了解决哈希冲突, 有开放地址法, 向后遍历链表
 		var hashTable1 = make([][]int, 10)
-		for m := range hashTable1 {
+		for m := 0; m < len(hashTable1); m++ {
 			hashTable1[m] = []int{m}
 			fmt.Println(hashTable1[m])
 			// if found {
 			//     ......
 			// }
-			m++
 		}
 		// 也可以是我们刚开始提到的链表法, 形如:
 		var hashTable2 = make([][]int, 10)
-		for i := range hashTable2 {
+		for i := 0; i < len(hashTable2); i++ {
 			hashTable2[i] = []int{i}
-			// fmt.Println(hashTable)
+			fmt.Println(hashTable2)
 		}
 	}
 	// 扩容是一种解决哈希冲突的办法. 为了决定是否进行扩容
