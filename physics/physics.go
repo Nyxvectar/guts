@@ -1,7 +1,7 @@
 /**
- * Author:  Nyxvectar Yan
- * Repo:    go-zju-formulas
- * Created: 07/23/2025
+ * Author:  Nyxvectar Yan 
+ * Repo:    guts
+ * Created: 07/30/2025
  */
 
 package physics
