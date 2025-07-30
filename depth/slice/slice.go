@@ -22,7 +22,7 @@ func GutsSlice() {
 		// 然而使用new()的时候并不会,需要append()来分配
 		var kokosa = new([]string)
 		// 此时其data位值是nil,返回值就是其起始地址/&[]
-		fmt.Print(kokosa)
+		fmt.Print(*kokosa)
 	}
 	fmt.Println()
 	{
