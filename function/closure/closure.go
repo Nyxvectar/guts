@@ -8,6 +8,8 @@ package closure
 
 import "fmt"
 
+// TODO: 不同的变量情况,Go编译器在内存层面都做了些什么操作?
+
 func GutsClosure() {
 	{
 		// Go语言当中的函数是头等对象, 她可以作为参数传递. (**其一**)
