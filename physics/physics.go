@@ -1,6 +1,6 @@
 /**
- * Author:  Nyxvectar Yan 
- * Repo:    guts
+ * Author:  Nyxvectar Yan
+ * Repo:    guths
  * Created: 07/30/2025
  */
 
